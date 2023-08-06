@@ -3,6 +3,14 @@ plugins {
 	id 'war'
 	id 'org.springframework.boot' version '3.0.9'
 	id 'io.spring.dependency-management' version '1.1.2'
+	id 'application'
+	id 'jacoco'
+}
+application {
+	mainClass = 'com.example.docmanagemntapi.DocmanagemntApiApplication'
+}
+jacoco {
+	applyTo run
 }
 
 group = 'com.example'
@@ -20,14 +28,45 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	providedRuntime 'org.springframework.boot:spring-boot-starter-tomcat'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
-	// https://mvnrepository.com/artifact/org.apache.pdfbox/pdfbox
 	implementation group: 'org.apache.pdfbox', name: 'pdfbox', version: '2.0.1'
-	// https://mvnrepository.com/artifact/javax.servlet/javax.servlet-api
 	compileOnly group: 'javax.servlet', name: 'javax.servlet-api', version: '3.0.1'
-
-
 }
 
 tasks.named('test') {
 	useJUnitPlatform()
+}
+
+test {
+	finalizedBy jacocoTestReport // report is always generated after tests run
+}
+
+jacocoTestReport {
+	dependsOn test // tests are required to run before generating the report
+
+	afterEvaluate {
+		classDirectories.setFrom(files(classDirectories.files.collect {
+			fileTree(dir: it, exclude: [
+					"com.example.docmanagemntapi.payload.UploadFileResponse.class",
+					"com/example/docmanagemntapi/exception/FileStorageException.class",
+					"com/example/docmanagemntapi/exception/MyFileNotFoundException.class"
+			])
+		}))
+	}
+}
+
+jacoco {
+	toolVersion = "0.8.9"
+	reportsDirectory = layout.buildDirectory.dir('customJacocoReportDir')
+}
+tasks.register('applicationCodeCoverageReport', JacocoReport) {
+	executionData run
+	sourceSets sourceSets.main
+}
+
+jacocoTestReport {
+	reports {
+		xml.required = false
+		csv.required = false
+		html.outputLocation = layout.buildDirectory.dir('jacocoHtml')
+	}
 }
