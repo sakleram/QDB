@@ -1,17 +1,12 @@
 package com.example.docmanagemntapi.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Bean;
 import org.springframework.http.*;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.client.RestTemplate;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
 
@@ -21,19 +16,7 @@ public class PostService {
     @Value("${api.url}")
     private String apiUrl;
 
-    //public RestTemplate restTemplate;
-
     private final RestTemplate restTemplate = new RestTemplate();
-
-
-    /*@Autowired
-    @Qualifier(value = "RestTemplate")*/
-   /*@Qualifier(value = "RestTemplate")
-    private RestTemplate restTemplate; */
-
-    /*public PostService(RestTemplate restTemplate) {
-        this.restTemplate = restTemplate;
-    }*/
 
     public void createPostWithDocument(String postId, String documentFileName) {
         try {

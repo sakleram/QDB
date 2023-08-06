@@ -46,7 +46,7 @@ jacocoTestReport {
 	afterEvaluate {
 		classDirectories.setFrom(files(classDirectories.files.collect {
 			fileTree(dir: it, exclude: [
-					"com.example.docmanagemntapi.payload.UploadFileResponse.class",
+					"com/example/docmanagemntapi/payload/UploadFileResponse.class",
 					"com/example/docmanagemntapi/exception/FileStorageException.class",
 					"com/example/docmanagemntapi/exception/MyFileNotFoundException.class"
 			])

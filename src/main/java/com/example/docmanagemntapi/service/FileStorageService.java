@@ -4,7 +4,6 @@ import com.example.docmanagemntapi.exception.FileStorageException;
 import com.example.docmanagemntapi.exception.MyFileNotFoundException;
 import com.example.docmanagemntapi.property.FileStorageProperties;
 import org.apache.pdfbox.pdmodel.PDDocument;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.http.HttpHeaders;
@@ -14,7 +13,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
-
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
@@ -31,7 +29,6 @@ public class FileStorageService {
     public FileStorageService(FileStorageProperties fileStorageProperties) {
         this.fileStorageLocation = Paths.get(fileStorageProperties.getUploadDir())
                 .toAbsolutePath().normalize();
-
         try {
             Files.createDirectories(this.fileStorageLocation);
         } catch (Exception ex) {
@@ -44,9 +41,6 @@ public class FileStorageService {
         try {
             String filePath = "C:/temp/" + fileName;
             file.transferTo(new File(filePath));
-            // Copy file to the target location (Replacing existing file with the same name)
-            //Path targetLocation = this.fileStorageLocation.resolve(fileName);
-            //Files.copy(file.getInputStream(), targetLocation, StandardCopyOption.REPLACE_EXISTING);
             return fileName;
         } catch (IOException ex) {
             throw new FileStorageException("Could not upload file " + fileName + ". Please try again!", ex);
@@ -67,7 +61,6 @@ public class FileStorageService {
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_PDF);
             headers.setContentDispositionFormData(fileName, fileName);
-
             return new ResponseEntity<>(baos.toByteArray(), headers, HttpStatus.OK);
         } catch (IOException e) {
             e.printStackTrace();
